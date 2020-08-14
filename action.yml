@@ -1,5 +1,8 @@
 name: 'Maximize build disk space'
 description: 'Maximize the available disk space for your build job'
+branding:
+  icon: 'crop'
+  color: 'orange'
 inputs:
   root-reserve-mb:
     description: 'Space to be left free on the root filesystem, in Megabytes.'
