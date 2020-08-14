@@ -16,6 +16,18 @@ inputs:
     description: 'Absolute file path for the LVM image created on the root filesystem, the default is usually fine.'
     required: false
     default: '/pv.img'
+  remove-dotnet:
+    description: 'Removes .NET runtime and libraries. (~17 GB)'
+    required: false
+    default: 'false'
+  remove-android:
+    description: 'Removes Android SDKs and Tools. (~11 GB)'
+    required: false
+    default: 'false'
+  remove-haskell:
+    description: 'Removes GHC artifacts. (~2.7 GB)'
+    required: false
+    default: 'false'
 runs:
   using: "composite"
   steps:
@@ -47,7 +59,28 @@ runs:
           echo "  Swap space:   ${{ inputs.swap-size-mb }} MiB"
           echo "  Mount path:   ${BUILD_MOUNT_PATH}"
           echo "  PV loop path: ${{ inputs.pv-loop-path }}"
+          echo -n "  Removing:     "
+          if [[ ${{ inputs.remove-dotnet }} == 'true' ]]; then
+            echo -n "dotnet "
+          fi
+          if [[ ${{ inputs.remove-android }} == 'true' ]]; then
+            echo -n "android "
+          fi
+          if [[ ${{ inputs.remove-haskell }} == 'true' ]]; then
+            echo -n "haskell "
+          fi
           echo
+          echo
+
+          if [[ ${{ inputs.remove-dotnet }} == 'true' ]]; then
+            sudo rm -rf /usr/share/dotnet
+          fi
+          if [[ ${{ inputs.remove-android }} == 'true' ]]; then
+            sudo rm -rf /usr/local/lib/android
+          fi
+          if [[ ${{ inputs.remove-haskell }} == 'true' ]]; then
+            sudo rm -rf /opt/ghc
+          fi
 
           TMP_DEV=$(df --output=source  /mnt/ | tail -1)
           ROOT_RESERVE_KB=$(expr ${{ inputs.root-reserve-mb }} \* 1024)
@@ -58,9 +91,11 @@ runs:
 
           # github runners have an active swap file in /mnt/swapfile
           # we want to reuse the temp disk, so first unmount swap and temp disk
+          echo "Unmounting swap and temp disk."
           sudo swapoff -a
           sudo umount /mnt
 
+          echo "Creating LVM Volume."
           # create loop pv image on root fs
           sudo fallocate -l "${ROOT_LVM_SIZE_BYTES}" "${{ inputs.pv-loop-path }}"
           export ROOT_LOOP_DEV=$(sudo losetup --find --show "${{ inputs.pv-loop-path }}")
@@ -72,11 +107,13 @@ runs:
           # create volume group from these pvs
           sudo vgcreate "${VG_NAME}" "${TMP_DEV}" "${ROOT_LOOP_DEV}"
 
+          echo "Recreating swap"
           # create and activate swap
           sudo lvcreate -L "${{ inputs.swap-size-mb }}M" -n swap "${VG_NAME}"
           sudo mkswap "/dev/mapper/${VG_NAME}-swap"
           sudo swapon "/dev/mapper/${VG_NAME}-swap"
 
+          echo "Creating build volume"
           # create and mount build volume
           sudo lvcreate -l 100%FREE -n buildlv "${VG_NAME}"
           sudo mkfs.ext4 -m0 "/dev/mapper/${VG_NAME}-buildlv"
