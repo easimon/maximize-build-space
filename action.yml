@@ -2,21 +2,20 @@ name: 'Maximize build disk space'
 description: 'Maximize the available disk space for your build job'
 inputs:
   root-reserve-mb:
-    description: 'Space to be left free on the root filesystem, in Megabytes'
-    required: true
-    default: 512
+    description: 'Space to be left free on the root filesystem, in Megabytes.'
+    required: false
+    default: 1024
   swap-size-mb:
-    description: 'Swap space to create, in Megabytes'
-    required: true
-    default: 2048
-  pv-loop-path:
-    description: 'Absolute file path for the LVM image created on the root filesystem'
-    required: true
-    default: '/pv.img'
+    description: 'Swap space to create, in Megabytes.'
+    required: false
+    default: 4096
   build-mount-path:
-    description: 'Absolute path to the mount point where the build space will be available'
-    required: true
-    default: '/mnt'
+    description: 'Absolute path to the mount point where the build space will be available, defaults to $GITHUB_WORKSPACE if unset.'
+    required: false
+  pv-loop-path:
+    description: 'Absolute file path for the LVM image created on the root filesystem, the default is usually fine.'
+    required: false
+    default: '/pv.img'
 runs:
   using: "composite"
   steps:
@@ -36,6 +35,19 @@ runs:
       shell: bash
       run: |
           set -euo pipefail
+
+          BUILD_MOUNT_PATH="${{ inputs.build-mount-path }}"
+          if [[ -z "${BUILD_MOUNT_PATH}" ]]; then
+            BUILD_MOUNT_PATH="${GITHUB_WORKSPACE}"
+          fi
+
+          echo "Arguments:"
+          echo
+          echo "  Root reserve: ${{ inputs.root-reserve-mb }} MiB"
+          echo "  Swap space:   ${{ inputs.swap-size-mb }} MiB"
+          echo "  Mount path:   ${BUILD_MOUNT_PATH}"
+          echo "  PV loop path: ${{ inputs.pv-loop-path }}"
+          echo
 
           TMP_DEV=$(df --output=source  /mnt/ | tail -1)
           ROOT_RESERVE_KB=$(expr ${{ inputs.root-reserve-mb }} \* 1024)
@@ -68,7 +80,7 @@ runs:
           # create and mount build volume
           sudo lvcreate -l 100%FREE -n buildlv "${VG_NAME}"
           sudo mkfs.ext4 "/dev/mapper/${VG_NAME}-buildlv"
-          sudo mount "/dev/mapper/${VG_NAME}-buildlv" "${{ inputs.build-mount-path }}"
+          sudo mount "/dev/mapper/${VG_NAME}-buildlv" "${BUILD_MOUNT_PATH}"
 
     - name: Disk space report after modification
       shell: bash
