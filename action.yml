@@ -1,0 +1,83 @@
+name: 'Maximize build disk space'
+description: 'Maximize the available disk space for your build job'
+inputs:
+  root-reserve-mb:
+    description: 'Space to be left free on the root filesystem, in Megabytes'
+    required: true
+    default: 512
+  swap-size-mb:
+    description: 'Swap space to create, in Megabytes'
+    required: true
+    default: 2048
+  pv-loop-path:
+    description: 'Absolute file path for the LVM image created on the root filesystem'
+    required: true
+    default: '/pv.img'
+  build-mount-path:
+    description: 'Absolute path to the mount point where the build space will be available'
+    required: true
+    default: '/mnt'
+runs:
+  using: "composite"
+  steps:
+    - name: Disk space report before modification
+      shell: bash
+      run: |
+        echo "Memory and swap:"
+        free
+        echo
+        swapon --show
+        echo
+
+        echo "Storage:"
+        df -h
+        echo
+    - name: Maximize build disk space
+      shell: bash
+      run: |
+          set -euo pipefail
+
+          TMP_DEV=$(df --output=source  /mnt/ | tail -1)
+          ROOT_RESERVE_KB=$(expr ${{ inputs.root-reserve-mb }} \* 1024)
+          ROOT_FREE_KB=$(df --block-size=1024 --output=avail / | tail -1)
+          ROOT_LVM_SIZE_KB=$(expr $ROOT_FREE_KB - $ROOT_RESERVE_KB)
+          ROOT_LVM_SIZE_BYTES=$(expr $ROOT_LVM_SIZE_KB \* 1024)
+          VG_NAME=buildvg
+
+          # github runners have an active swap file in /mnt/swapfile
+          # we want to reuse the temp disk, so first unmount swap and temp disk
+          sudo swapoff -a
+          sudo umount /mnt
+
+          # create loop pv image on root fs
+          sudo fallocate -l "${ROOT_LVM_SIZE_BYTES}" "${{ inputs.pv-loop-path }}"
+          export ROOT_LOOP_DEV=$(sudo losetup --find --show "${{ inputs.pv-loop-path }}")
+          sudo pvcreate -f "${ROOT_LOOP_DEV}"
+
+          # create pv on temp disk
+          sudo pvcreate -f "${TMP_DEV}"
+
+          # create volume group from these pvs
+          sudo vgcreate "${VG_NAME}" "${TMP_DEV}" "${ROOT_LOOP_DEV}"
+
+          # create and activate swap
+          sudo lvcreate -L "${{ inputs.swap-size-mb }}M" -n swap "${VG_NAME}"
+          sudo mkswap "/dev/mapper/${VG_NAME}-swap"
+          sudo swapon "/dev/mapper/${VG_NAME}-swap"
+
+          # create and mount build volume
+          sudo lvcreate -l 100%FREE -n buildlv "${VG_NAME}"
+          sudo mkfs.ext4 "/dev/mapper/${VG_NAME}-buildlv"
+          sudo mount "/dev/mapper/${VG_NAME}-buildlv" "${{ inputs.build-mount-path }}"
+
+    - name: Disk space report after modification
+      shell: bash
+      run: |
+        echo "Memory and swap:"
+        free
+        echo
+        swapon --show
+        echo
+
+        echo "Storage:"
+        df -h
