@@ -79,7 +79,7 @@ runs:
 
           # create and mount build volume
           sudo lvcreate -l 100%FREE -n buildlv "${VG_NAME}"
-          sudo mkfs.ext4 "/dev/mapper/${VG_NAME}-buildlv"
+          sudo mkfs.ext4 -m0 "/dev/mapper/${VG_NAME}-buildlv"
           sudo mount "/dev/mapper/${VG_NAME}-buildlv" "${BUILD_MOUNT_PATH}"
 
     - name: Disk space report after modification
