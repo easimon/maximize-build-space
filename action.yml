@@ -124,6 +124,7 @@ runs:
           sudo lvcreate -l 100%FREE -n buildlv "${VG_NAME}"
           sudo mkfs.ext4 -m0 "/dev/mapper/${VG_NAME}-buildlv"
           sudo mount "/dev/mapper/${VG_NAME}-buildlv" "${BUILD_MOUNT_PATH}"
+          sudo chown -R runner "${BUILD_MOUNT_PATH}"
 
     - name: Disk space report after modification
       shell: bash
