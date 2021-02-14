@@ -14,7 +14,7 @@ The idea came up when I tried to build a Fedora Linux Kernel RPM on Github, and 
 
 - **This action is a hack, really**, and on a "works for me" basis. It has been built by reverse-enginnering undocumented parts of the Github runner setup, which might change in the future -- up to the point where this action ceases to work. For sure you're voiding the warranty on Github runners when using this. **If you are not running into disk space issues with the default runner setup, don't use it.**.
 - Removal of unnecessary software is currently implemented by `rm -rf` on specific folders, not by using a package manager. While this is quick and easy, it might delete dependencies that are required implicitly and so break your build (e.g. because your build job uses a .NET based tool and you removed the required runtime).
-- The LVM image file on the root partition is created sparse, which makes the available space on the root volume larger than it acutally is. You should not consider to have more space on the root volume available than specified in `root-reserve-mb`, otherwise you might run into surprising "out of space" situations. While your build job will run (and consume disk space) in `$GITHUB_WORKSPACE` mostly, other parts might require additional space on `/` as well -- most notable being `/var/lib/docker` for docker images, when running docker build steps. While it would be possible to create the image non-sparse, I found only quite time-consuming ways to do so (write zeros with dd, e.g.).
+- The LVM image files on the root and temp partition are created sparse, which makes the available space on the original volumes appear larger than it acutally is. You should not consider to have more space on the root volume available than specified in `root-reserve-mb`, and consider `/mnt` full, otherwise you might run into surprising "out of space" situations. While your build job will run (and consume disk space) in `$GITHUB_WORKSPACE` mostly, other parts might require additional space on `/` as well -- most notable being `/var/lib/docker` for docker images, when running docker build steps. While it would be possible to create the image non-sparse, I found only quite time-consuming ways to do so (write zeros with dd, e.g.).
 
 Btw: the choice of removable packages is not an expression of dislike against these -- they were just the largest folders for a single toolkit I could find quickly. The list of removable items might grow over time (also the implementation of removal).
 
@@ -79,6 +79,10 @@ All inputs are optional and default to the following, gaining about 8-9 GB addit
     description: 'Absolute file path for the LVM image created on the root filesystem, the default is usually fine.'
     required: false
     default: '/pv.img'
+  tmp-pv-loop-path:
+    description: 'Absolute file path for the LVM image created on the temp filesystem, the default is usually fine. Must reside on /mnt'
+    required: false
+    default: '/mnt/tmp-pv.img'
   remove-dotnet:
     description: 'Removes .NET runtime and libraries. (frees ~17 GB)'
     required: false
