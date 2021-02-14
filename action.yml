@@ -19,6 +19,10 @@ inputs:
     description: 'Absolute file path for the LVM image created on the root filesystem, the default is usually fine.'
     required: false
     default: '/pv.img'
+  tmp-pv-loop-path:
+    description: 'Absolute file path for the LVM image created on the temp filesystem, the default is usually fine. Must reside on /mnt'
+    required: false
+    default: '/mnt/tmp-pv.img'
   remove-dotnet:
     description: 'Removes .NET runtime and libraries. (frees ~17 GB)'
     required: false
@@ -59,10 +63,11 @@ runs:
 
           echo "Arguments:"
           echo
-          echo "  Root reserve: ${{ inputs.root-reserve-mb }} MiB"
-          echo "  Swap space:   ${{ inputs.swap-size-mb }} MiB"
-          echo "  Mount path:   ${BUILD_MOUNT_PATH}"
-          echo "  PV loop path: ${{ inputs.pv-loop-path }}"
+          echo "  Root reserve:      ${{ inputs.root-reserve-mb }} MiB"
+          echo "  Swap space:        ${{ inputs.swap-size-mb }} MiB"
+          echo "  Mount path:        ${BUILD_MOUNT_PATH}"
+          echo "  Root PV loop path: ${{ inputs.pv-loop-path }}"
+          echo "  Temp PV loop path: ${{ inputs.tmp-pv-loop-path }}"
           echo -n "  Removing:     "
           if [[ ${{ inputs.remove-dotnet }} == 'true' ]]; then
             echo -n "dotnet "
@@ -73,7 +78,6 @@ runs:
           if [[ ${{ inputs.remove-haskell }} == 'true' ]]; then
             echo -n "haskell "
           fi
-          echo
           echo
 
           echo "Removing unwanted software... "
@@ -88,30 +92,37 @@ runs:
           fi
           echo "... done"
 
-          TMP_DEV=$(df --output=source  /mnt/ | tail -1)
+          VG_NAME=buildvg
+
+          # github runners have an active swap file in /mnt/swapfile
+          # we want to reuse the temp disk, so first unmount swap and clean the temp disk
+          echo "Unmounting and removing swap file."
+          sudo swapoff -a
+          sudo rm -f /mnt/swapfile
+
+          echo "Creating LVM Volume."
+          echo "  Creating LVM PV on root fs."
+          # create loop pv image on root fs
           ROOT_RESERVE_KB=$(expr ${{ inputs.root-reserve-mb }} \* 1024)
           ROOT_FREE_KB=$(df --block-size=1024 --output=avail / | tail -1)
           ROOT_LVM_SIZE_KB=$(expr $ROOT_FREE_KB - $ROOT_RESERVE_KB)
           ROOT_LVM_SIZE_BYTES=$(expr $ROOT_LVM_SIZE_KB \* 1024)
-          VG_NAME=buildvg
-
-          # github runners have an active swap file in /mnt/swapfile
-          # we want to reuse the temp disk, so first unmount swap and temp disk
-          echo "Unmounting swap and temp disk."
-          sudo swapoff -a
-          sudo umount /mnt
-
-          echo "Creating LVM Volume."
-          # create loop pv image on root fs
           sudo fallocate -l "${ROOT_LVM_SIZE_BYTES}" "${{ inputs.pv-loop-path }}"
           export ROOT_LOOP_DEV=$(sudo losetup --find --show "${{ inputs.pv-loop-path }}")
           sudo pvcreate -f "${ROOT_LOOP_DEV}"
 
           # create pv on temp disk
-          sudo pvcreate -f "${TMP_DEV}"
+          echo "  Creating LVM PV on temp fs."
+          TMP_RESERVE_KB=1024 # should be fine with 0 as well, but you never know
+          TMP_FREE_KB=$(df --block-size=1024 --output=avail /mnt | tail -1)
+          TMP_LVM_SIZE_KB=$(expr $TMP_FREE_KB - $TMP_RESERVE_KB)
+          TMP_LVM_SIZE_BYTES=$(expr $TMP_LVM_SIZE_KB \* 1024)
+          sudo fallocate -l "${TMP_LVM_SIZE_BYTES}" "${{ inputs.tmp-pv-loop-path }}"
+          export TMP_LOOP_DEV=$(sudo losetup --find --show "${{ inputs.tmp-pv-loop-path }}")
+          sudo pvcreate -f "${TMP_LOOP_DEV}"
 
           # create volume group from these pvs
-          sudo vgcreate "${VG_NAME}" "${TMP_DEV}" "${ROOT_LOOP_DEV}"
+          sudo vgcreate "${VG_NAME}" "${TMP_LOOP_DEV}" "${ROOT_LOOP_DEV}"
 
           echo "Recreating swap"
           # create and activate swap
