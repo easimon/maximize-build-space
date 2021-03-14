@@ -1,5 +1,8 @@
 name: Test
-on: push
+on:
+  push:
+    branches-ignore:
+      - 'test-report'
 
 env:
   REPORT_DIR: /tmp/build-report
@@ -56,18 +59,23 @@ jobs:
           echo "Space freed      : ${FREED_GIG}G"
 
           mkdir -p "${REPORT_DIR}"
+
+          REMOVE_ANDROID="${{ matrix.remove-android }}"
+          REMOVE_DOTNET="${{ matrix.remove-dotnet }}"
+          REMOVE_HASKELL="${{ matrix.remove-haskell }}"
+
           cat <<EOF > "${REPORT_FILENAME_BASE}.json"
             {
               "os":                "${{ matrix.os }}",
-              "remove_android":    "${{ matrix.remove-android }}",
-              "remove_dotnet":     "${{ matrix.remove-dotnet }}",
-              "remove_haskell":    "${{ matrix.remove-haskell }}",
+              "remove_android":    "${REMOVE_ANDROID//false/}",
+              "remove_dotnet":     "${REMOVE_DOTNET//false/}",
+              "remove_haskell":    "${REMOVE_HASKELL//false/}",
               "space_free_before": "${FREE_GIG_BEFORE}",
               "space_free_after":  "${FREE_GIG_AFTER}",
               "space_freed":       "${FREED_GIG}"
             }
           EOF
-          jq -r '["", .os, .remove_android, .remove_dotnet, .remove_haskell, .space_freed, .space_free_after, ""] | join(" | ")' < "${REPORT_FILENAME_BASE}.json" >> "${REPORT_FILENAME_BASE}.txt"
+          jq -r '[.os, .remove_android, .remove_dotnet, .remove_haskell, .space_freed, .space_free_after] | join(" | ")' < "${REPORT_FILENAME_BASE}.json" >> "${REPORT_FILENAME_BASE}.txt"
 
       - name: Upload disk space report
         uses: actions/upload-artifact@v2
@@ -91,8 +99,8 @@ jobs:
 
       - name: Join Markdown report
         run: |
-          echo '| OS | Android SDKs removed | .NET SDKs removed | Haskell removed | Space freed | Space free |' > "${REPORT_DIR}/${REPORT_FILE}"
-          echo '| -- | -------------------- | ----------------- | --------------- | ----------- | ---------- |' >> "${REPORT_DIR}/${REPORT_FILE}"
+          echo 'OS | Android SDKs removed | .NET SDKs removed | Haskell removed | GB freed | GB free' > "${REPORT_DIR}/${REPORT_FILE}"
+          echo '---|:--------------------:|:-----------------:|:---------------:|---------:|-------:' >> "${REPORT_DIR}/${REPORT_FILE}"
           cat ${REPORT_DIR}/*.txt >> "${REPORT_DIR}/${REPORT_FILE}"
 
       - name: Upload collected report
@@ -100,3 +108,21 @@ jobs:
         with:
           name: disk-space-report-markdown
           path: ${{ env.REPORT_DIR }}/${{ env.REPORT_FILE }}
+
+      - name: Checkout report branch
+        uses: actions/checkout@v2
+        with:
+          ref: test-report
+
+      - name: Overwrite old report
+        run: |
+          cp README.md.template README.md
+          cat ${{ env.REPORT_DIR }}/${{ env.REPORT_FILE }} >> README.md
+
+          cat "${REPORT_DIR}/${REPORT_FILE}"
+
+          git config user.name github-actions
+          git config user.email github-actions@github.com
+          git add README.md
+          git commit -m "Generated new report"
+          git push
