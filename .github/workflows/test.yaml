@@ -124,5 +124,4 @@ jobs:
           git config user.name github-actions
           git config user.email github-actions@github.com
           git add README.md
-          git commit -m "Generated new report"
-          git push
+          git commit -m "Generated new report" && git push || echo "Report unchanged, not updating."
