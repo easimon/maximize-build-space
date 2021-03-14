@@ -7,11 +7,11 @@ inputs:
   root-reserve-mb:
     description: 'Space to be left free on the root filesystem, in Megabytes.'
     required: false
-    default: 1024
+    default: '1024'
   swap-size-mb:
     description: 'Swap space to create, in Megabytes.'
     required: false
-    default: 4096
+    default: '4096'
   build-mount-path:
     description: 'Absolute path to the mount point where the build space will be available, defaults to $GITHUB_WORKSPACE if unset.'
     required: false

@@ -21,9 +21,9 @@ Btw: the choice of removable packages is not an expression of dislike against th
 
 ## How it works
 
-At the time of writing, public Github runners are using [Azure DS2_v2 virtual machines](https://docs.microsoft.com/en-us/azure/virtual-machines/dv2-dsv2-series#dsv2-series), featuring a 84GB OS disk on `/` and a 14GB temp disk mounted on `/mnt`.
+At the time of writing, public [Github-hosted runners](https://docs.github.com/en/actions/using-github-hosted-runners/about-github-hosted-runners) are using [Azure DS2_v2 virtual machines](https://docs.microsoft.com/en-us/azure/virtual-machines/dv2-dsv2-series#dsv2-series), featuring a 84GB OS disk on `/` and a 14GB temp disk mounted on `/mnt`.
 
-1. The root file system has ~29GB (of 84GB) available, the rest being consumed by the preinstalled build environment. Github runners come with a rich choice of software, see [Ubuntu 18.04.4 LTS image description](https://github.com/actions/virtual-environments/blob/ubuntu18/20200806.0/images/linux/Ubuntu1804-README.md). This is great to support a wide variety of workflows but also consumes a lot of space by providing programs that might be unused for an individual build job.
+1. The root file system has ~29GB (of 84GB) available, the rest being consumed by the preinstalled build environment. Github runners come with a rich choice of software, see the image descriptions for [Ubuntu 18.04](https://github.com/actions/virtual-environments/blob/main/images/linux/Ubuntu1804-README.md) or [Ubuntu 20.04](https://github.com/actions/virtual-environments/blob/main/images/linux/Ubuntu2004-README.md). This is great to support a wide variety of workflows but also consumes a lot of space by providing programs that might be unused for an individual build job.
 2. The temp disk hosts a 4GB swap file, leaving 10GB completely unused.
 
 This action (optionally) removes unwanted preinstalled software, concatenates the free space on `/` and `/mnt` (the temp disk) to an LVM volume group, creates a swap partition and a build volume on that volume group, and mounts this volume back to a given path (`${GITHUB_WORKSPACE}` by default). This results in the space of the previously installed packages and the temp disk being available for your build job.
