@@ -1,0 +1,102 @@
+name: Test
+on: push
+
+env:
+  REPORT_DIR: /tmp/build-report
+
+jobs:
+  test-action:
+    name: Test action
+    runs-on: ${{ matrix.os }}
+
+    strategy:
+      fail-fast: false
+      matrix:
+        os:
+          - ubuntu-18.04
+          - ubuntu-20.04
+        remove-android:
+          - 'true'
+          - 'false'
+        remove-dotnet:
+          - 'true'
+          - 'false'
+        remove-haskell:
+          - 'true'
+          - 'false'
+
+    steps:
+      - name: Determine free space before
+        run: |
+          echo "FREE_GIG_BEFORE=$(df --output=avail --sync -BG "${{ github.workspace }}" | tail -1 | sed 's/[^0-9]*//g')" >> $GITHUB_ENV
+
+      - name: Check out Maximize Build Space action
+        uses: actions/checkout@v2
+        with:
+          path: ./.github/actions/maximize-test
+
+      - name: Maximize build space
+        uses: ./.github/actions/maximize-test
+        with:
+          remove-android:  ${{ matrix.remove-android }}
+          remove-dotnet:   ${{ matrix.remove-dotnet }}
+          remove-haskell:  ${{ matrix.remove-haskell }}
+
+      - name: Determine free space after
+        run: |
+          echo "FREE_GIG_AFTER=$(df --output=avail --sync -BG "${{ github.workspace }}" | tail -1 | sed 's/[^0-9]*//g')" >> $GITHUB_ENV
+
+      - name: Calculate freed space
+        run: |
+          REPORT_FILENAME_BASE="${REPORT_DIR}/${{ matrix.os }}_${{ matrix.remove-android }}_${{ matrix.remove-dotnet }}_${{ matrix.remove-haskell }}"
+          FREED_GIG=$(expr ${FREE_GIG_AFTER} - ${FREE_GIG_BEFORE})
+
+          echo "Free space before: ${FREE_GIG_BEFORE}G"
+          echo "Free space after : ${FREE_GIG_AFTER}G"
+          echo "Space freed      : ${FREED_GIG}G"
+
+          mkdir -p "${REPORT_DIR}"
+          cat <<EOF > "${REPORT_FILENAME_BASE}.json"
+            {
+              "os":                "${{ matrix.os }}",
+              "remove_android":    "${{ matrix.remove-android }}",
+              "remove_dotnet":     "${{ matrix.remove-dotnet }}",
+              "remove_haskell":    "${{ matrix.remove-haskell }}",
+              "space_free_before": "${FREE_GIG_BEFORE}",
+              "space_free_after":  "${FREE_GIG_AFTER}",
+              "space_freed":       "${FREED_GIG}"
+            }
+          EOF
+          jq -r '["", .os, .remove_android, .remove_dotnet, .remove_haskell, .space_freed, .space_free_after, ""] | join(" | ")' < "${REPORT_FILENAME_BASE}.json" >> "${REPORT_FILENAME_BASE}.txt"
+
+      - name: Upload disk space report
+        uses: actions/upload-artifact@v2
+        with:
+          name: disk-space-report-single
+          path: ${{ env.REPORT_DIR }}
+
+  collect-reports:
+    name: Collect reports
+    runs-on: ubuntu-latest
+    needs: test-action
+    env:
+      REPORT_FILE: space-free-report.md
+
+    steps:
+      - name: Download single reports
+        uses: actions/download-artifact@v2
+        with:
+          name: disk-space-report-single
+          path: ${{ env.REPORT_DIR }}
+
+      - name: Join Markdown report
+        run: |
+          echo '| OS | Android SDKs removed | .NET SDKs removed | Haskell removed | Space freed | Space free |' > "${REPORT_DIR}/${REPORT_FILE}"
+          echo '| -- | -------------------- | ----------------- | --------------- | ----------- | ---------- |' >> "${REPORT_DIR}/${REPORT_FILE}"
+          cat ${REPORT_DIR}/*.txt >> "${REPORT_DIR}/${REPORT_FILE}"
+
+      - name: Upload collected report
+        uses: actions/upload-artifact@v2
+        with:
+          name: disk-space-report-markdown
+          path: ${{ env.REPORT_DIR }}/${{ env.REPORT_FILE }}
