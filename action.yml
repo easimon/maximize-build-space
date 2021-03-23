@@ -107,7 +107,7 @@ runs:
           ROOT_FREE_KB=$(df --block-size=1024 --output=avail / | tail -1)
           ROOT_LVM_SIZE_KB=$(expr $ROOT_FREE_KB - $ROOT_RESERVE_KB)
           ROOT_LVM_SIZE_BYTES=$(expr $ROOT_LVM_SIZE_KB \* 1024)
-          sudo fallocate -l "${ROOT_LVM_SIZE_BYTES}" "${{ inputs.pv-loop-path }}"
+          sudo touch "${{ inputs.pv-loop-path }}" && sudo fallocate -z -l "${ROOT_LVM_SIZE_BYTES}" "${{ inputs.pv-loop-path }}"
           export ROOT_LOOP_DEV=$(sudo losetup --find --show "${{ inputs.pv-loop-path }}")
           sudo pvcreate -f "${ROOT_LOOP_DEV}"
 
@@ -117,7 +117,7 @@ runs:
           TMP_FREE_KB=$(df --block-size=1024 --output=avail /mnt | tail -1)
           TMP_LVM_SIZE_KB=$(expr $TMP_FREE_KB - $TMP_RESERVE_KB)
           TMP_LVM_SIZE_BYTES=$(expr $TMP_LVM_SIZE_KB \* 1024)
-          sudo fallocate -l "${TMP_LVM_SIZE_BYTES}" "${{ inputs.tmp-pv-loop-path }}"
+          sudo touch "${{ inputs.tmp-pv-loop-path }}" && sudo fallocate -z -l "${TMP_LVM_SIZE_BYTES}" "${{ inputs.tmp-pv-loop-path }}"
           export TMP_LOOP_DEV=$(sudo losetup --find --show "${{ inputs.tmp-pv-loop-path }}")
           sudo pvcreate -f "${TMP_LOOP_DEV}"
 
@@ -133,7 +133,7 @@ runs:
           echo "Creating build volume"
           # create and mount build volume
           sudo lvcreate -l 100%FREE -n buildlv "${VG_NAME}"
-          sudo mkfs.ext4 -m0 "/dev/mapper/${VG_NAME}-buildlv"
+          sudo mkfs.ext4 -Enodiscard -m0 "/dev/mapper/${VG_NAME}-buildlv"
           sudo mount "/dev/mapper/${VG_NAME}-buildlv" "${BUILD_MOUNT_PATH}"
           sudo chown -R runner "${BUILD_MOUNT_PATH}"
 
