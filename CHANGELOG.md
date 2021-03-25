@@ -1,6 +1,6 @@
 # Changelog
 
-## [Unreleased] - YYYY-MM-dd: Do not overprovision space by default
+## [v4] - 2021-03-25: Do not overprovision space by default
 
 ### Added
 
