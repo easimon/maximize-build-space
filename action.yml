@@ -8,10 +8,21 @@ inputs:
     description: 'Space to be left free on the root filesystem, in Megabytes.'
     required: false
     default: '1024'
+  temp-reserve-mb:
+    description: 'Space to be left free on the temp filesystem (/mnt), in Megabytes.'
+    required: false
+    default: '100'
   swap-size-mb:
     description: 'Swap space to create, in Megabytes.'
     required: false
     default: '4096'
+  overprovision-lvm:
+    description: |
+      Create the LVM disk images as sparse files, making the space required for the LVM image files *appear* unused on the
+      hosting volumes until actually allocated. Use with care, this can lead to surprising out-of-disk-space situations.
+      You should prefer adjusting root-reserve-mb/temp-reserve-mb over using this option.
+    required: false
+    default: 'false'
   build-mount-path:
     description: 'Absolute path to the mount point where the build space will be available, defaults to $GITHUB_WORKSPACE if unset.'
     required: false
@@ -64,7 +75,9 @@ runs:
           echo "Arguments:"
           echo
           echo "  Root reserve:      ${{ inputs.root-reserve-mb }} MiB"
+          echo "  Temp reserve:      ${{ inputs.temp-reserve-mb }} MiB"
           echo "  Swap space:        ${{ inputs.swap-size-mb }} MiB"
+          echo "  Overprovision LVM: ${{ inputs.overprovision-lvm }}"
           echo "  Mount path:        ${BUILD_MOUNT_PATH}"
           echo "  Root PV loop path: ${{ inputs.pv-loop-path }}"
           echo "  Temp PV loop path: ${{ inputs.tmp-pv-loop-path }}"
@@ -113,7 +126,7 @@ runs:
 
           # create pv on temp disk
           echo "  Creating LVM PV on temp fs."
-          TMP_RESERVE_KB=1024 # should be fine with 0 as well, but you never know
+          TMP_RESERVE_KB=$(expr ${{ inputs.temp-reserve-mb }} \* 1024)
           TMP_FREE_KB=$(df --block-size=1024 --output=avail /mnt | tail -1)
           TMP_LVM_SIZE_KB=$(expr $TMP_FREE_KB - $TMP_RESERVE_KB)
           TMP_LVM_SIZE_BYTES=$(expr $TMP_LVM_SIZE_KB \* 1024)
@@ -133,7 +146,11 @@ runs:
           echo "Creating build volume"
           # create and mount build volume
           sudo lvcreate -l 100%FREE -n buildlv "${VG_NAME}"
-          sudo mkfs.ext4 -Enodiscard -m0 "/dev/mapper/${VG_NAME}-buildlv"
+          if [[ ${{ inputs.overprovision-lvm }} == 'true' ]]; then
+            sudo mkfs.ext4 -m0 "/dev/mapper/${VG_NAME}-buildlv"
+          else
+            sudo mkfs.ext4 -Enodiscard -m0 "/dev/mapper/${VG_NAME}-buildlv"
+          fi
           sudo mount "/dev/mapper/${VG_NAME}-buildlv" "${BUILD_MOUNT_PATH}"
           sudo chown -R runner "${BUILD_MOUNT_PATH}"
 
