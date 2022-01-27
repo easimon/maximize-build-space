@@ -153,6 +153,7 @@ runs:
           fi
           sudo mount "/dev/mapper/${VG_NAME}-buildlv" "${BUILD_MOUNT_PATH}"
           sudo chown -R runner "${BUILD_MOUNT_PATH}"
+          sudo chgrp -R runner "${BUILD_MOUNT_PATH}"
 
     - name: Disk space report after modification
       shell: bash
