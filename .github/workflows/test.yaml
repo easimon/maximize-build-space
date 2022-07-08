@@ -18,6 +18,7 @@ jobs:
         os:
           - ubuntu-18.04
           - ubuntu-20.04
+          - ubuntu-22.04
         remove-android:
           - 'true'
           - 'false'
@@ -99,7 +100,7 @@ jobs:
 
       - name: Join Markdown report
         run: |
-          echo 'OS | Android SDKs removed | .NET SDKs removed | Haskell removed | GB freed | GB free' > "${REPORT_DIR}/${REPORT_FILE}"
+          echo 'OS | Android SDKs removed | .NET SDKs removed | Haskell removed | GB freed | GB free' > "${REPORT_DIR}/${REPORT_FILE}"
           echo '---|:--------------------:|:-----------------:|:---------------:|---------:|-------:' >> "${REPORT_DIR}/${REPORT_FILE}"
           cat ${REPORT_DIR}/*.txt >> "${REPORT_DIR}/${REPORT_FILE}"
 
