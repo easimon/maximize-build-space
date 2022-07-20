@@ -19,7 +19,7 @@ ubuntu-20.04 |  |  |  | 6 | 36
 ubuntu-20.04 |  |  | true | 6 | 36
 ubuntu-20.04 |  | true |  | 9 | 39
 ubuntu-20.04 |  | true | true | 9 | 39
-ubuntu-20.04 | true |  |  | 20 | 50
+ubuntu-20.04 | true |  |  | 21 | 50
 ubuntu-20.04 | true |  | true | 20 | 50
 ubuntu-20.04 | true | true |  | 22 | 52
 ubuntu-20.04 | true | true | true | 22 | 52
