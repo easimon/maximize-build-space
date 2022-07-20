@@ -1,8 +1,16 @@
 name: Test
 on:
+  workflow_dispatch:
+  schedule:
+    # weekly, randomly chosen time
+    - cron: "17 18 * * 0"
   push:
     branches-ignore:
       - 'test-report'
+
+concurrency:
+  group: ${{ github.workflow }}
+  cancel-in-progress: true
 
 env:
   REPORT_DIR: /tmp/build-report
