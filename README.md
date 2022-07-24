@@ -15,8 +15,8 @@ ubuntu-18.04 | true |  |  | 23 | 52
 ubuntu-18.04 | true |  | true | 23 | 52
 ubuntu-18.04 | true | true |  | 26 | 55
 ubuntu-18.04 | true | true | true | 26 | 55
-ubuntu-20.04 |  |  |  | 6 | 36
-ubuntu-20.04 |  |  | true | 6 | 36
+ubuntu-20.04 |  |  |  | 7 | 37
+ubuntu-20.04 |  |  | true | 7 | 37
 ubuntu-20.04 |  | true |  | 9 | 39
 ubuntu-20.04 |  | true | true | 9 | 39
 ubuntu-20.04 | true |  |  | 20 | 50
