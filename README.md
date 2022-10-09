@@ -27,7 +27,7 @@ ubuntu-22.04 |  |  |  | 6 | 47
 ubuntu-22.04 |  |  | true | 6 | 47
 ubuntu-22.04 |  | true |  | 7 | 48
 ubuntu-22.04 |  | true | true | 7 | 48
-ubuntu-22.04 | true |  |  | 18 | 59
-ubuntu-22.04 | true |  | true | 18 | 59
+ubuntu-22.04 | true |  |  | 17 | 58
+ubuntu-22.04 | true |  | true | 17 | 58
 ubuntu-22.04 | true | true |  | 18 | 59
 ubuntu-22.04 | true | true | true | 18 | 59
