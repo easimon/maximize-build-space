@@ -23,10 +23,10 @@ ubuntu-20.04 | true |  |  | 18 | 49
 ubuntu-20.04 | true |  | true | 18 | 49
 ubuntu-20.04 | true | true |  | 21 | 52
 ubuntu-20.04 | true | true | true | 21 | 52
-ubuntu-22.04 |  |  |  | 7 | 44
-ubuntu-22.04 |  |  | true | 7 | 44
-ubuntu-22.04 |  | true |  | 8 | 45
-ubuntu-22.04 |  | true | true | 8 | 45
+ubuntu-22.04 |  |  |  | 6 | 43
+ubuntu-22.04 |  |  | true | 6 | 43
+ubuntu-22.04 |  | true |  | 7 | 44
+ubuntu-22.04 |  | true | true | 7 | 44
 ubuntu-22.04 | true |  |  | 18 | 55
 ubuntu-22.04 | true |  | true | 18 | 55
 ubuntu-22.04 | true | true |  | 19 | 56
