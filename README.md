@@ -15,19 +15,19 @@ ubuntu-18.04 | true |  |  | 20 | 52
 ubuntu-18.04 | true |  | true | 20 | 52
 ubuntu-18.04 | true | true |  | 23 | 55
 ubuntu-18.04 | true | true | true | 23 | 55
-ubuntu-20.04 |  |  |  | 7 | 36
-ubuntu-20.04 |  |  | true | 7 | 36
-ubuntu-20.04 |  | true |  | 10 | 39
-ubuntu-20.04 |  | true | true | 10 | 39
-ubuntu-20.04 | true |  |  | 18 | 47
-ubuntu-20.04 | true |  | true | 18 | 47
-ubuntu-20.04 | true | true |  | 21 | 50
-ubuntu-20.04 | true | true | true | 21 | 50
-ubuntu-22.04 |  |  |  | 6 | 40
-ubuntu-22.04 |  |  | true | 6 | 40
-ubuntu-22.04 |  | true |  | 7 | 41
-ubuntu-22.04 |  | true | true | 7 | 41
-ubuntu-22.04 | true |  |  | 18 | 52
-ubuntu-22.04 | true |  | true | 18 | 52
-ubuntu-22.04 | true | true |  | 19 | 53
-ubuntu-22.04 | true | true | true | 19 | 53
+ubuntu-20.04 |  |  |  | 7 | 37
+ubuntu-20.04 |  |  | true | 7 | 37
+ubuntu-20.04 |  | true |  | 9 | 39
+ubuntu-20.04 |  | true | true | 9 | 39
+ubuntu-20.04 | true |  |  | 18 | 48
+ubuntu-20.04 | true |  | true | 18 | 48
+ubuntu-20.04 | true | true |  | 20 | 50
+ubuntu-20.04 | true | true | true | 20 | 50
+ubuntu-22.04 |  |  |  | 7 | 40
+ubuntu-22.04 |  |  | true | 7 | 40
+ubuntu-22.04 |  | true |  | 8 | 41
+ubuntu-22.04 |  | true | true | 8 | 41
+ubuntu-22.04 | true |  |  | 19 | 52
+ubuntu-22.04 | true |  | true | 19 | 52
+ubuntu-22.04 | true | true |  | 20 | 53
+ubuntu-22.04 | true | true | true | 20 | 53
