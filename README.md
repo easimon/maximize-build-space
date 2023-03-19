@@ -7,27 +7,27 @@ This table shows the amount of free space you receive when using the action with
 
 OS | Android SDKs removed | .NET SDKs removed | Haskell removed | GB freed | GB free
 ---|:--------------------:|:-----------------:|:---------------:|---------:|-------:
-ubuntu-18.04 |  |  |  | 7 | 34
-ubuntu-18.04 |  |  | true | 7 | 34
+ubuntu-18.04 |  |  |  | 7 | 35
+ubuntu-18.04 |  |  | true | 7 | 35
 ubuntu-18.04 |  | true |  | 9 | 36
-ubuntu-18.04 |  | true | true | 9 | 36
-ubuntu-18.04 | true |  |  | 21 | 48
+ubuntu-18.04 |  | true | true | 8 | 36
+ubuntu-18.04 | true |  |  | 20 | 48
 ubuntu-18.04 | true |  | true | 21 | 48
-ubuntu-18.04 | true | true |  | 22 | 49
-ubuntu-18.04 | true | true | true | 22 | 49
+ubuntu-18.04 | true | true |  | 22 | 50
+ubuntu-18.04 | true | true | true | 22 | 50
 ubuntu-20.04 |  |  |  | 7 | 33
 ubuntu-20.04 |  |  | true | 7 | 33
-ubuntu-20.04 |  | true |  | 9 | 35
+ubuntu-20.04 |  | true |  | 10 | 36
 ubuntu-20.04 |  | true | true | 9 | 35
 ubuntu-20.04 | true |  |  | 19 | 45
 ubuntu-20.04 | true |  | true | 19 | 45
 ubuntu-20.04 | true | true |  | 21 | 47
 ubuntu-20.04 | true | true | true | 21 | 47
-ubuntu-22.04 |  |  |  | 7 | 36
+ubuntu-22.04 |  |  |  | 7 | 37
 ubuntu-22.04 |  |  | true | 7 | 36
 ubuntu-22.04 |  | true |  | 9 | 38
-ubuntu-22.04 |  | true | true | 9 | 38
-ubuntu-22.04 | true |  |  | 19 | 48
+ubuntu-22.04 |  | true | true | 8 | 38
+ubuntu-22.04 | true |  |  | 19 | 49
 ubuntu-22.04 | true |  | true | 19 | 48
-ubuntu-22.04 | true | true |  | 20 | 49
-ubuntu-22.04 | true | true | true | 20 | 49
+ubuntu-22.04 | true | true |  | 20 | 50
+ubuntu-22.04 | true | true | true | 20 | 50
