@@ -46,6 +46,14 @@ inputs:
     description: 'Removes GHC (Haskell) artifacts. (frees ~2.7 GB)'
     required: false
     default: 'false'
+  remove-codeql:
+    description: 'Removes CodeQL Action Bundles. (frees ~5.4 GB)'
+    required: false
+    default: 'false'
+  remove-docker-images:
+    description: 'Removes cached Docker images. (frees ~3 GB)'
+    required: false
+    default: 'false'
 runs:
   using: "composite"
   steps:
@@ -91,6 +99,12 @@ runs:
           if [[ ${{ inputs.remove-haskell }} == 'true' ]]; then
             echo -n "haskell "
           fi
+          if [[ ${{ inputs.remove-codeql }} == 'true' ]]; then
+            echo -n "codeql "
+          fi
+          if [[ ${{ inputs.remove-docker-images }} == 'true' ]]; then
+            echo -n "docker "
+          fi
           echo
 
           echo "Removing unwanted software... "
@@ -102,6 +116,12 @@ runs:
           fi
           if [[ ${{ inputs.remove-haskell }} == 'true' ]]; then
             sudo rm -rf /opt/ghc
+          fi
+          if [[ ${{ inputs.remove-codeql }} == 'true' ]]; then
+            sudo rm -rf /opt/hostedtoolcache/CodeQL
+          fi
+          if [[ ${{ inputs.remove-docker-images }} == 'true' ]]; then
+            sudo docker image prune --all --force
           fi
           echo "... done"
 
