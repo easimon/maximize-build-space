@@ -119,4 +119,12 @@ All inputs are optional and default to the following, gaining about 7-8 GB addit
     description: 'Removes GHC (Haskell) artifacts.'
     required: false
     default: 'false'
+  remove-codeql:
+    description: 'Removes CodeQL Action Bundles.'
+    required: false
+    default: 'false'
+  remove-docker-images:
+    description: 'Removes cached Docker images.'
+    required: false
+    default: 'false'
 ```
