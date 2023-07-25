@@ -43,6 +43,10 @@ jobs:
           - 'false'
 
     steps:
+      - name: Record start time
+        run: |
+          echo "START_TIME=$(date +%s)" >> $GITHUB_ENV
+      
       - name: Determine free space before
         run: |
           echo "FREE_GIG_BEFORE=$(df --output=avail --sync -BG "${{ github.workspace }}" | tail -1 | sed 's/[^0-9]*//g')" >> $GITHUB_ENV
@@ -61,18 +65,24 @@ jobs:
           remove-codeql:        ${{ matrix.remove-codeql }}
           remove-docker-images: ${{ matrix.remove-docker-images }}
 
+      - name: Record end time
+        run: |
+          echo "END_TIME=$(date +%s)" >> $GITHUB_ENV
+
       - name: Determine free space after
         run: |
           echo "FREE_GIG_AFTER=$(df --output=avail --sync -BG "${{ github.workspace }}" | tail -1 | sed 's/[^0-9]*//g')" >> $GITHUB_ENV
 
-      - name: Calculate freed space
+      - name: Calculate freed space and elapsed time
         run: |
           REPORT_FILENAME_BASE="${REPORT_DIR}/${{ matrix.os }}_${{ matrix.remove-android }}_${{ matrix.remove-dotnet }}_${{ matrix.remove-haskell }}_${{ matrix.remove-codeql }}_${{ matrix.remove-docker-images }}"
           FREED_GIG=$(expr ${FREE_GIG_AFTER} - ${FREE_GIG_BEFORE})
+          ELAPSED_TIME=$(expr ${END_TIME} - ${START_TIME})
 
           echo "Free space before: ${FREE_GIG_BEFORE}G"
           echo "Free space after : ${FREE_GIG_AFTER}G"
           echo "Space freed      : ${FREED_GIG}G"
+          echo "Time elapsed    : ${ELAPSED_TIME} seconds"
 
           mkdir -p "${REPORT_DIR}"
 
@@ -92,10 +102,11 @@ jobs:
               "remove_docker_images": "${REMOVE_DOCKER_IMAGES//false/}",
               "space_free_before":    "${FREE_GIG_BEFORE}",
               "space_free_after":     "${FREE_GIG_AFTER}",
-              "space_freed":          "${FREED_GIG}"
+              "space_freed":          "${FREED_GIG}",
+              "elapsed_time":         "${ELAPSED_TIME}"
             }
           EOF
-          jq -r '[.os, .remove_android, .remove_dotnet, .remove_haskell, .remove_codeql, .remove_docker_images, .space_freed, .space_free_after] | join(" | ")' < "${REPORT_FILENAME_BASE}.json" >> "${REPORT_FILENAME_BASE}.txt"
+          jq -r '[.os, .remove_android, .remove_dotnet, .remove_haskell, .remove_codeql, .remove_docker_images, .space_freed, .space_free_after, .elapsed_time] | join(" | ")' < "${REPORT_FILENAME_BASE}.json" >> "${REPORT_FILENAME_BASE}.txt"
 
       - name: Upload disk space report
         uses: actions/upload-artifact@v2
@@ -119,8 +130,8 @@ jobs:
 
       - name: Join Markdown report
         run: |
-          echo 'OS | Android SDKs removed | .NET SDKs removed | Haskell removed | CodeQL Removed | Cached Docker Images Removed | GB freed | GB free' > "${REPORT_DIR}/${REPORT_FILE}"
-          echo '---|:--------------------:|:-----------------:|:---------------:|:--------------:|:----------------------------:|---------:|-------:' >> "${REPORT_DIR}/${REPORT_FILE}"
+          echo 'OS | Android SDKs removed | .NET SDKs removed | Haskell removed | CodeQL Removed | Cached Docker Images Removed | GB freed | GB free | Elapsed Time |' > "${REPORT_DIR}/${REPORT_FILE}"
+          echo '---|:--------------------:|:-----------------:|:---------------:|:--------------:|:----------------------------:|:--------:|:-------:|:------------:|' >> "${REPORT_DIR}/${REPORT_FILE}"
           cat ${REPORT_DIR}/*.txt >> "${REPORT_DIR}/${REPORT_FILE}"
 
       - name: Upload collected report
