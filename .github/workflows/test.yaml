@@ -130,8 +130,8 @@ jobs:
 
       - name: Join Markdown report
         run: |
-          echo 'OS | Android SDKs removed | .NET SDKs removed | Haskell removed | CodeQL Removed | Cached Docker Images Removed | GB freed | GB free | Elapsed Time |' > "${REPORT_DIR}/${REPORT_FILE}"
-          echo '---|:--------------------:|:-----------------:|:---------------:|:--------------:|:----------------------------:|:--------:|:-------:|:------------:|' >> "${REPORT_DIR}/${REPORT_FILE}"
+          echo 'OS | Android SDKs removed | .NET SDKs removed | Haskell removed | CodeQL Removed | Cached Docker Images Removed | GB freed | GB free | Elapsed Time (seconds) |' > "${REPORT_DIR}/${REPORT_FILE}"
+          echo '---|:--------------------:|:-----------------:|:---------------:|:--------------:|:----------------------------:|:--------:|:-------:|:----------------------:|' >> "${REPORT_DIR}/${REPORT_FILE}"
           cat ${REPORT_DIR}/*.txt >> "${REPORT_DIR}/${REPORT_FILE}"
 
       - name: Upload collected report
