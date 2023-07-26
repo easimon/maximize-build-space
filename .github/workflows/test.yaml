@@ -46,13 +46,13 @@ jobs:
       - name: Record start time
         run: |
           echo "START_TIME=$(date +%s)" >> $GITHUB_ENV
-      
+
       - name: Determine free space before
         run: |
           echo "FREE_GIG_BEFORE=$(df --output=avail --sync -BG "${{ github.workspace }}" | tail -1 | sed 's/[^0-9]*//g')" >> $GITHUB_ENV
 
       - name: Check out Maximize Build Space action
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
         with:
           path: ./.github/actions/maximize-test
 
@@ -109,7 +109,7 @@ jobs:
           jq -r '[.os, .remove_android, .remove_dotnet, .remove_haskell, .remove_codeql, .remove_docker_images, .space_freed, .space_free_after, .elapsed_time] | join(" | ")' < "${REPORT_FILENAME_BASE}.json" >> "${REPORT_FILENAME_BASE}.txt"
 
       - name: Upload disk space report
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: disk-space-report-single
           path: ${{ env.REPORT_DIR }}
@@ -123,7 +123,7 @@ jobs:
 
     steps:
       - name: Download single reports
-        uses: actions/download-artifact@v2
+        uses: actions/download-artifact@v3
         with:
           name: disk-space-report-single
           path: ${{ env.REPORT_DIR }}
@@ -135,13 +135,13 @@ jobs:
           cat ${REPORT_DIR}/*.txt >> "${REPORT_DIR}/${REPORT_FILE}"
 
       - name: Upload collected report
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: disk-space-report-markdown
           path: ${{ env.REPORT_DIR }}/${{ env.REPORT_FILE }}
 
       - name: Checkout report branch
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
         with:
           ref: test-report
 
