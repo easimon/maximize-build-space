@@ -26,6 +26,10 @@ inputs:
   build-mount-path:
     description: 'Absolute path to the mount point where the build space will be available, defaults to $GITHUB_WORKSPACE if unset.'
     required: false
+  build-mount-path-ownership:
+    description: 'Ownership of the mount point path, defaults to standard "runner" user and group.'
+    required: false
+    default: 'runner:runner'
   pv-loop-path:
     description: 'Absolute file path for the LVM image created on the root filesystem, the default is usually fine.'
     required: false
@@ -171,9 +175,11 @@ runs:
           else
             sudo mkfs.ext4 -Enodiscard -m0 "/dev/mapper/${VG_NAME}-buildlv"
           fi
+          if [[ ! -d "${BUILD_MOUNT_PATH}" ]]; then
+            mkdir -p "${BUILD_MOUNT_PATH}"
+          fi
           sudo mount "/dev/mapper/${VG_NAME}-buildlv" "${BUILD_MOUNT_PATH}"
-          sudo chown -R runner "${BUILD_MOUNT_PATH}"
-          sudo chgrp -R runner "${BUILD_MOUNT_PATH}"
+          sudo chown -R "${{ inputs.build-mount-path-ownership }}" "${BUILD_MOUNT_PATH}"
 
     - name: Disk space report after modification
       shell: bash
