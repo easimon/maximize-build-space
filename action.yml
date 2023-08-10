@@ -176,7 +176,7 @@ runs:
             sudo mkfs.ext4 -Enodiscard -m0 "/dev/mapper/${VG_NAME}-buildlv"
           fi
           if [[ ! -d "${BUILD_MOUNT_PATH}" ]]; then
-            mkdir -p "${BUILD_MOUNT_PATH}"
+            sudo mkdir -p "${BUILD_MOUNT_PATH}"
           fi
           sudo mount "/dev/mapper/${VG_NAME}-buildlv" "${BUILD_MOUNT_PATH}"
           sudo chown -R "${{ inputs.build-mount-path-ownership }}" "${BUILD_MOUNT_PATH}"
