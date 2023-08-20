@@ -7,67 +7,67 @@ This table shows the amount of free space you receive when using the action with
 
 OS | Android SDKs removed | .NET SDKs removed | Haskell removed | CodeQL Removed | Cached Docker Images Removed | GB freed | GB free | Elapsed Time (seconds) |
 ---|:--------------------:|:-----------------:|:---------------:|:--------------:|:----------------------------:|:--------:|:-------:|:----------------------:|
-ubuntu-20.04 |  |  |  |  |  | 7 | 28 | 2
-ubuntu-20.04 |  |  |  |  | true | 12 | 33 | 29
-ubuntu-20.04 |  |  |  | true |  | 15 | 36 | 4
-ubuntu-20.04 |  |  |  | true | true | 21 | 41 | 28
-ubuntu-20.04 |  |  | true |  |  | 7 | 28 | 3
-ubuntu-20.04 |  |  | true |  | true | 12 | 33 | 30
-ubuntu-20.04 |  |  | true | true |  | 15 | 36 | 3
-ubuntu-20.04 |  |  | true | true | true | 21 | 41 | 32
-ubuntu-20.04 |  | true |  |  |  | 9 | 29 | 4
-ubuntu-20.04 |  | true |  |  | true | 14 | 35 | 14
-ubuntu-20.04 |  | true |  | true |  | 17 | 38 | 5
-ubuntu-20.04 |  | true |  | true | true | 23 | 43 | 30
-ubuntu-20.04 |  | true | true |  |  | 9 | 30 | 8
-ubuntu-20.04 |  | true | true |  | true | 15 | 35 | 27
-ubuntu-20.04 |  | true | true | true |  | 17 | 38 | 5
-ubuntu-20.04 |  | true | true | true | true | 23 | 43 | 30
-ubuntu-20.04 | true |  |  |  |  | 19 | 40 | 49
-ubuntu-20.04 | true |  |  |  | true | 24 | 45 | 37
-ubuntu-20.04 | true |  |  | true |  | 27 | 47 | 10
-ubuntu-20.04 | true |  |  | true | true | 33 | 53 | 92
-ubuntu-20.04 | true |  | true |  |  | 19 | 40 | 59
-ubuntu-20.04 | true |  | true |  | true | 24 | 45 | 29
-ubuntu-20.04 | true |  | true | true |  | 27 | 48 | 60
-ubuntu-20.04 | true |  | true | true | true | 32 | 53 | 99
-ubuntu-20.04 | true | true |  |  |  | 21 | 41 | 60
-ubuntu-20.04 | true | true |  |  | true | 26 | 47 | 98
-ubuntu-20.04 | true | true |  | true |  | 29 | 49 | 11
-ubuntu-20.04 | true | true |  | true | true | 34 | 55 | 91
-ubuntu-20.04 | true | true | true |  |  | 21 | 41 | 72
-ubuntu-20.04 | true | true | true |  | true | 26 | 47 | 117
-ubuntu-20.04 | true | true | true | true |  | 29 | 49 | 73
-ubuntu-20.04 | true | true | true | true | true | 34 | 55 | 96
-ubuntu-22.04 |  |  |  |  |  | 7 | 31 | 1
-ubuntu-22.04 |  |  |  |  | true | 11 | 35 | 8
-ubuntu-22.04 |  |  |  | true |  | 15 | 39 | 3
-ubuntu-22.04 |  |  |  | true | true | 20 | 43 | 20
-ubuntu-22.04 |  |  | true |  |  | 7 | 30 | 2
-ubuntu-22.04 |  |  | true |  | true | 11 | 35 | 8
-ubuntu-22.04 |  |  | true | true |  | 15 | 38 | 3
-ubuntu-22.04 |  |  | true | true | true | 19 | 43 | 22
-ubuntu-22.04 |  | true |  |  |  | 8 | 32 | 3
-ubuntu-22.04 |  | true |  |  | true | 13 | 37 | 9
-ubuntu-22.04 |  | true |  | true |  | 17 | 41 | 7
-ubuntu-22.04 |  | true |  | true | true | 21 | 45 | 23
-ubuntu-22.04 |  | true | true |  |  | 9 | 32 | 6
-ubuntu-22.04 |  | true | true |  | true | 13 | 37 | 24
-ubuntu-22.04 |  | true | true | true |  | 17 | 40 | 5
-ubuntu-22.04 |  | true | true | true | true | 21 | 45 | 22
-ubuntu-22.04 | true |  |  |  |  | 19 | 42 | 60
-ubuntu-22.04 | true |  |  |  | true | 23 | 47 | 26
-ubuntu-22.04 | true |  |  | true |  | 27 | 50 | 11
-ubuntu-22.04 | true |  |  | true | true | 31 | 55 | 23
-ubuntu-22.04 | true |  | true |  |  | 19 | 43 | 13
-ubuntu-22.04 | true |  | true |  | true | 23 | 47 | 77
-ubuntu-22.04 | true |  | true | true |  | 27 | 50 | 16
-ubuntu-22.04 | true |  | true | true | true | 32 | 55 | 32
-ubuntu-22.04 | true | true |  |  |  | 20 | 44 | 55
-ubuntu-22.04 | true | true |  |  | true | 25 | 49 | 31
-ubuntu-22.04 | true | true |  | true |  | 28 | 52 | 68
-ubuntu-22.04 | true | true |  | true | true | 33 | 57 | 114
-ubuntu-22.04 | true | true | true |  |  | 21 | 44 | 62
-ubuntu-22.04 | true | true | true |  | true | 25 | 49 | 21
-ubuntu-22.04 | true | true | true | true |  | 28 | 52 | 77
-ubuntu-22.04 | true | true | true | true | true | 33 | 57 | 87
+ubuntu-20.04 |  |  |  |  |  | 7 | 27 | 3
+ubuntu-20.04 |  |  |  |  | true | 13 | 32 | 12
+ubuntu-20.04 |  |  |  | true |  | 15 | 35 | 3
+ubuntu-20.04 |  |  |  | true | true | 20 | 40 | 36
+ubuntu-20.04 |  |  | true |  |  | 7 | 27 | 5
+ubuntu-20.04 |  |  | true |  | true | 13 | 33 | 21
+ubuntu-20.04 |  |  | true | true |  | 15 | 35 | 4
+ubuntu-20.04 |  |  | true | true | true | 21 | 40 | 25
+ubuntu-20.04 |  | true |  |  |  | 9 | 29 | 5
+ubuntu-20.04 |  | true |  |  | true | 14 | 34 | 9
+ubuntu-20.04 |  | true |  | true |  | 17 | 36 | 4
+ubuntu-20.04 |  | true |  | true | true | 22 | 42 | 10
+ubuntu-20.04 |  | true | true |  |  | 9 | 29 | 6
+ubuntu-20.04 |  | true | true |  | true | 14 | 34 | 29
+ubuntu-20.04 |  | true | true | true |  | 16 | 36 | 6
+ubuntu-20.04 |  | true | true | true | true | 22 | 42 | 33
+ubuntu-20.04 | true |  |  |  |  | 19 | 39 | 63
+ubuntu-20.04 | true |  |  |  | true | 24 | 44 | 19
+ubuntu-20.04 | true |  |  | true |  | 27 | 47 | 11
+ubuntu-20.04 | true |  |  | true | true | 33 | 52 | 68
+ubuntu-20.04 | true |  | true |  |  | 19 | 38 | 75
+ubuntu-20.04 | true |  | true |  | true | 24 | 44 | 41
+ubuntu-20.04 | true |  | true | true |  | 27 | 47 | 13
+ubuntu-20.04 | true |  | true | true | true | 33 | 52 | 98
+ubuntu-20.04 | true | true |  |  |  | 21 | 41 | 51
+ubuntu-20.04 | true | true |  |  | true | 26 | 46 | 34
+ubuntu-20.04 | true | true |  | true |  | 29 | 49 | 53
+ubuntu-20.04 | true | true |  | true | true | 35 | 54 | 15
+ubuntu-20.04 | true | true | true |  |  | 21 | 40 | 63
+ubuntu-20.04 | true | true | true |  | true | 27 | 46 | 102
+ubuntu-20.04 | true | true | true | true |  | 28 | 48 | 18
+ubuntu-20.04 | true | true | true | true | true | 34 | 54 | 93
+ubuntu-22.04 |  |  |  |  |  | 7 | 30 | 2
+ubuntu-22.04 |  |  |  |  | true | 12 | 35 | 23
+ubuntu-22.04 |  |  |  | true |  | 15 | 37 | 3
+ubuntu-22.04 |  |  |  | true | true | 20 | 43 | 8
+ubuntu-22.04 |  |  | true |  |  | 7 | 29 | 2
+ubuntu-22.04 |  |  | true |  | true | 12 | 34 | 22
+ubuntu-22.04 |  |  | true | true |  | 16 | 38 | 4
+ubuntu-22.04 |  |  | true | true | true | 20 | 43 | 8
+ubuntu-22.04 |  | true |  |  |  | 9 | 31 | 3
+ubuntu-22.04 |  | true |  |  | true | 14 | 36 | 16
+ubuntu-22.04 |  | true |  | true |  | 17 | 39 | 7
+ubuntu-22.04 |  | true |  | true | true | 22 | 44 | 29
+ubuntu-22.04 |  | true | true |  |  | 9 | 32 | 4
+ubuntu-22.04 |  | true | true |  | true | 14 | 36 | 33
+ubuntu-22.04 |  | true | true | true |  | 17 | 39 | 6
+ubuntu-22.04 |  | true | true | true | true | 22 | 44 | 40
+ubuntu-22.04 | true |  |  |  |  | 19 | 41 | 49
+ubuntu-22.04 | true |  |  |  | true | 24 | 46 | 13
+ubuntu-22.04 | true |  |  | true |  | 27 | 49 | 79
+ubuntu-22.04 | true |  |  | true | true | 32 | 54 | 96
+ubuntu-22.04 | true |  | true |  |  | 19 | 41 | 71
+ubuntu-22.04 | true |  | true |  | true | 23 | 45 | 222
+ubuntu-22.04 | true |  | true | true |  | 27 | 49 | 70
+ubuntu-22.04 | true |  | true | true | true | 32 | 54 | 94
+ubuntu-22.04 | true | true |  |  |  | 21 | 43 | 55
+ubuntu-22.04 | true | true |  |  | true | 26 | 48 | 27
+ubuntu-22.04 | true | true |  | true |  | 29 | 52 | 63
+ubuntu-22.04 | true | true |  | true | true | 34 | 56 | 92
+ubuntu-22.04 | true | true | true |  |  | 21 | 43 | 85
+ubuntu-22.04 | true | true | true |  | true | 26 | 48 | 17
+ubuntu-22.04 | true | true | true | true |  | 29 | 51 | 11
+ubuntu-22.04 | true | true | true | true | true | 34 | 56 | 82
