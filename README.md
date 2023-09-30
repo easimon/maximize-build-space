@@ -64,7 +64,7 @@ jobs:
           swap-size-mb: 1024
           remove-dotnet: 'true'
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
       - name: Build
         run: |
