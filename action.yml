@@ -182,7 +182,8 @@ runs:
           sudo chown -R "${{ inputs.build-mount-path-ownership }}" "${BUILD_MOUNT_PATH}"
 
     - name: Disk space report after modification
-      shell: sh
+      shell: bash
+      working-directory: /
       run: |
         echo "Memory and swap:"
         free
