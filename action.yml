@@ -139,7 +139,7 @@ runs:
 
           # Move files in workspace to temp folder
           sudo mkdir /movedwsp
-          sudo mv -r "$BUILD_MOUNT_PATH/*" /movedwsp
+          sudo mv "$BUILD_MOUNT_PATH/*" /movedwsp
 
           echo "Creating LVM Volume."
           echo "  Creating LVM PV on root fs."
@@ -186,7 +186,7 @@ runs:
           sudo chown -R "${{ inputs.build-mount-path-ownership }}" "${BUILD_MOUNT_PATH}"
 
           # Move workspace files back
-          sudo mv -r /movedwsp/* "$BUILD_MOUNT_PATH/"
+          sudo mv /movedwsp/* "$BUILD_MOUNT_PATH/"
 
     - name: Disk space report after modification
       shell: bash
