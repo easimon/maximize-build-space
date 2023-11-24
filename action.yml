@@ -184,6 +184,7 @@ runs:
     - name: Disk space report after modification
       shell: bash
       run: |
+        cd /
         echo "Memory and swap:"
         free
         echo
