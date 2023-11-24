@@ -77,6 +77,7 @@ runs:
     - name: Maximize build disk space
       shell: bash
       run: |
+          cd /
           set -euo pipefail
 
           BUILD_MOUNT_PATH="${{ inputs.build-mount-path }}"
@@ -184,7 +185,6 @@ runs:
     - name: Disk space report after modification
       shell: bash
       run: |
-        cd /
         echo "Memory and swap:"
         free
         echo
