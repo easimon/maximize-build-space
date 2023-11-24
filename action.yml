@@ -77,7 +77,6 @@ runs:
     - name: Maximize build disk space
       shell: bash
       run: |
-          cd /
           set -euo pipefail
 
           BUILD_MOUNT_PATH="${{ inputs.build-mount-path }}"
@@ -183,7 +182,6 @@ runs:
           sudo chown -R "${{ inputs.build-mount-path-ownership }}" "${BUILD_MOUNT_PATH}"
 
     - name: Disk space report after modification
-      shell: bash
       run: |
         echo "Memory and swap:"
         free
