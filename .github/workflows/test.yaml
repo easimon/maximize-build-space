@@ -52,7 +52,7 @@ jobs:
           echo "FREE_GIG_BEFORE=$(df --output=avail --sync -BG "${{ github.workspace }}" | tail -1 | sed 's/[^0-9]*//g')" >> $GITHUB_ENV
 
       - name: Check out Maximize Build Space action
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           path: ./.github/actions/maximize-test
 
@@ -141,7 +141,7 @@ jobs:
           path: ${{ env.REPORT_DIR }}/${{ env.REPORT_FILE }}
 
       - name: Checkout report branch
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           ref: test-report
 

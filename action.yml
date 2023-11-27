@@ -111,6 +111,10 @@ runs:
           fi
           echo
 
+          # ensure mount path exists
+          mkdir -p "${BUILD_MOUNT_PATH}"
+          find "${BUILD_MOUNT_PATH}" -maxdepth 0 ! -empty -exec echo 'WARNING: directory [{}] is not empty, data loss might occur. Content:' \; -exec ls -al "{}" \;
+
           echo "Removing unwanted software... "
           if [[ ${{ inputs.remove-dotnet }} == 'true' ]]; then
             sudo rm -rf /usr/share/dotnet
@@ -180,6 +184,9 @@ runs:
           fi
           sudo mount "/dev/mapper/${VG_NAME}-buildlv" "${BUILD_MOUNT_PATH}"
           sudo chown -R "${{ inputs.build-mount-path-ownership }}" "${BUILD_MOUNT_PATH}"
+
+          # if build mount path is a parent of $GITHUB_WORKSPACE, recreate it
+          sudo mkdir -p "${GITHUB_WORKSPACE}"
 
     - name: Disk space report after modification
       shell: bash
