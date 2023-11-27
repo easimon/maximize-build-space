@@ -185,6 +185,9 @@ runs:
           sudo mount "/dev/mapper/${VG_NAME}-buildlv" "${BUILD_MOUNT_PATH}"
           sudo chown -R "${{ inputs.build-mount-path-ownership }}" "${BUILD_MOUNT_PATH}"
 
+          # if build mount path is a parent of $GITHUB_WORKSPACE, recreate it
+          sudo mkdir -p "${GITHUB_WORKSPACE}"
+
     - name: Disk space report after modification
       shell: bash
       run: |
