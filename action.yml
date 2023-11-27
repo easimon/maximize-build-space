@@ -111,8 +111,8 @@ runs:
           fi
           echo
 
-          # ensure mount path exists
-          mkdir -p "${BUILD_MOUNT_PATH}"
+          # ensure mount path exists before the action
+          sudo mkdir -p "${BUILD_MOUNT_PATH}"
           find "${BUILD_MOUNT_PATH}" -maxdepth 0 ! -empty -exec echo 'WARNING: directory [{}] is not empty, data loss might occur. Content:' \; -exec ls -al "{}" \;
 
           echo "Removing unwanted software... "
@@ -178,9 +178,6 @@ runs:
             sudo mkfs.ext4 -m0 "/dev/mapper/${VG_NAME}-buildlv"
           else
             sudo mkfs.ext4 -Enodiscard -m0 "/dev/mapper/${VG_NAME}-buildlv"
-          fi
-          if [[ ! -d "${BUILD_MOUNT_PATH}" ]]; then
-            sudo mkdir -p "${BUILD_MOUNT_PATH}"
           fi
           sudo mount "/dev/mapper/${VG_NAME}-buildlv" "${BUILD_MOUNT_PATH}"
           sudo chown -R "${{ inputs.build-mount-path-ownership }}" "${BUILD_MOUNT_PATH}"
