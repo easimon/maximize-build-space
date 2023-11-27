@@ -111,6 +111,9 @@ runs:
           fi
           echo
 
+          # ensure mount path exists
+          mkdir -p "${BUILD_MOUNT_PATH}"
+
           echo "Removing unwanted software... "
           if [[ ${{ inputs.remove-dotnet }} == 'true' ]]; then
             sudo rm -rf /usr/share/dotnet
