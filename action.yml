@@ -65,13 +65,13 @@ runs:
       shell: bash
       run: |
         echo "Memory and swap:"
-        free
+        sudo free
         echo
-        swapon --show
+        sudo swapon --show
         echo
 
         echo "Available storage:"
-        df -h
+        sudo df -h
         echo
 
     - name: Maximize build disk space
@@ -189,10 +189,10 @@ runs:
       shell: bash
       run: |
         echo "Memory and swap:"
-        free
+        sudo free
         echo
-        swapon --show
+        sudo swapon --show
         echo
 
         echo "Available storage:"
-        df -h
+        sudo df -h
