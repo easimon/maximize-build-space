@@ -65,13 +65,13 @@ runs:
       shell: bash
       run: |
         echo "Memory and swap:"
-        free
+        sudo free
         echo
-        swapon --show
+        sudo swapon --show
         echo
 
         echo "Available storage:"
-        df -h
+        sudo df -h
         echo
 
     - name: Maximize build disk space
@@ -113,7 +113,7 @@ runs:
 
           # ensure mount path exists before the action
           sudo mkdir -p "${BUILD_MOUNT_PATH}"
-          find "${BUILD_MOUNT_PATH}" -maxdepth 0 ! -empty -exec echo 'WARNING: directory [{}] is not empty, data loss might occur. Content:' \; -exec ls -al "{}" \;
+          sudo find "${BUILD_MOUNT_PATH}" -maxdepth 0 ! -empty -exec echo 'WARNING: directory [{}] is not empty, data loss might occur. Content:' \; -exec ls -al "{}" \;
 
           echo "Removing unwanted software... "
           if [[ ${{ inputs.remove-dotnet }} == 'true' ]]; then
@@ -189,10 +189,10 @@ runs:
       shell: bash
       run: |
         echo "Memory and swap:"
-        free
+        sudo free
         echo
-        swapon --show
+        sudo swapon --show
         echo
 
         echo "Available storage:"
-        df -h
+        sudo df -h
