@@ -30,6 +30,31 @@ jobs:
         with:
           build-mount-path: /var/lib/docker/tmp
 
+  test-mount-parent-of-workspace:
+    name: Test mounting the parent of GITHUB_WORKSPACE
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out Maximize Build Space action
+        uses: actions/checkout@v4
+        with:
+          path: ./.github/actions/maximize-test
+
+      - name: Calculate parent of workspace
+        id: workspace-parent
+        run: echo "parent=$(dirname "${GITHUB_WORKSPACE}")" >> "$GITHUB_OUTPUT"
+
+      - name: Maximize build space
+        uses: ./.github/actions/maximize-test
+        with:
+          build-mount-path: ${{ steps.workspace-parent.outputs.parent }}
+
+      - name: Create file in build folder as runner user (test ownership)
+        run: |
+          mkdir -p ${{ steps.workspace-parent.outputs.parent }}/new
+          touch ${{ steps.workspace-parent.outputs.parent }}/new/file.txt
+          touch ${GITHUB_WORKSPACE}/file.txt
+          ls -alR ${{ steps.workspace-parent.outputs.parent }}
+
   determine-free-space:
     name: Determine free space with different settings
     runs-on: ${{ matrix.os }}
