@@ -111,6 +111,9 @@ runs:
           fi
           echo
 
+          # store owner of $GITHUB_WORKSPACE in case the action deletes it
+          WORKSPACE_OWNER="$(stat -c '%U:%G' "${GITHUB_WORKSPACE}")"
+
           # ensure mount path exists before the action
           sudo mkdir -p "${BUILD_MOUNT_PATH}"
           sudo find "${BUILD_MOUNT_PATH}" -maxdepth 0 ! -empty -exec echo 'WARNING: directory [{}] is not empty, data loss might occur. Content:' \; -exec ls -al "{}" \;
@@ -182,8 +185,11 @@ runs:
           sudo mount "/dev/mapper/${VG_NAME}-buildlv" "${BUILD_MOUNT_PATH}"
           sudo chown -R "${{ inputs.build-mount-path-ownership }}" "${BUILD_MOUNT_PATH}"
 
-          # if build mount path is a parent of $GITHUB_WORKSPACE, recreate it
-          sudo mkdir -p "${GITHUB_WORKSPACE}"
+          # if build mount path is a parent of $GITHUB_WORKSPACE, and has been deleted, recreate it
+          if [[ ! -d "${GITHUB_WORKSPACE}" ]]; then
+            sudo mkdir -p "${GITHUB_WORKSPACE}"
+            sudo chown -R "${WORKSPACE_OWNER}" "${GITHUB_WORKSPACE}"
+          fi
 
     - name: Disk space report after modification
       shell: bash
