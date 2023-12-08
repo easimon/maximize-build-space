@@ -58,6 +58,10 @@ inputs:
     description: 'Removes cached Docker images. (frees ~3 GB)'
     required: false
     default: 'false'
+  remove-large-packages:
+    description: 'Removes large packages. (frees ~5 GB)'
+    required: false
+    default: 'false'
 runs:
   using: "composite"
   steps:
@@ -109,6 +113,9 @@ runs:
           if [[ ${{ inputs.remove-docker-images }} == 'true' ]]; then
             echo -n "docker "
           fi
+          if [[ ${{ inputs.remove-large-packages }} == 'true' ]]; then
+            echo -n "large-packages "
+          fi
           echo
 
           # store owner of $GITHUB_WORKSPACE in case the action deletes it
@@ -133,6 +140,22 @@ runs:
           fi
           if [[ ${{ inputs.remove-docker-images }} == 'true' ]]; then
             sudo docker image prune --all --force
+          fi
+          if [[ ${{ inputs.remove-large-packages }} == 'true' ]]; then
+            sudo apt-get purge -y \
+              '^llvm-.*' \
+              'php.*' \
+              '^mongodb-.*' \
+              '^mysql-.*' \
+              azure-cli \
+              google-cloud-sdk \
+              google-chrome-stable \
+              firefox \
+              powershell \
+              microsoft-edge-stable \
+              mono-devel
+            sudo apt-get autoremove -y
+            sudo apt-get clean
           fi
           echo "... done"
 
