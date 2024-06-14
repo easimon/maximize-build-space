@@ -1,8 +1,8 @@
-name: "Maximize GitHUb Runner SPace"
+name: "Maximize GitHub Runner SPace"
 description: "Maximize the available disk space for your test and/or build job"
 branding:
   icon: "crop"
-  color: "white"
+  color: "blue"
 
 inputs:
   # Standard package removal actions
