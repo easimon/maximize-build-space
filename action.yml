@@ -1,88 +1,130 @@
-name: 'Maximize build disk space'
-description: 'Maximize the available disk space for your build job'
+name: "Maximize GitHUb Runner SPace"
+description: "Maximize the available disk space for your test and/or build job"
 branding:
-  icon: 'crop'
-  color: 'orange'
+  icon: "crop"
+  color: "white"
+
 inputs:
+  # Standard package removal actions
   remove-dotnet:
-    description: 'Removes .NET runtime and libraries. (frees ~17 GB)'
+    description: "Removes .NET runtime and libraries. (frees ~2 GB)"
     required: false
-    default: 'false'
+    default: "false"
   remove-android:
-    description: 'Removes Android SDKs and Tools. (frees ~11 GB)'
+    description: "Removes Android SDKs and Tools. (frees ~9 GB)"
     required: false
-    default: 'false'
+    default: "false"
   remove-haskell:
-    description: 'Removes GHC (Haskell) artifacts. (frees ~2.7 GB)'
+    description: "Removes GHC (Haskell) artifacts. (frees ~5 GB)"
     required: false
-    default: 'false'
+    default: "false"
   remove-codeql:
-    description: 'Removes CodeQL Action Bundles. (frees ~5.4 GB)'
+    description: "Removes CodeQL Action Bundles. (frees ~5 GB)"
     required: false
-    default: 'false'
+    default: "false"
   remove-docker-images:
-    description: 'Removes cached Docker images. (frees ~3 GB)'
+    description: "Removes cached Docker images. (frees ~3 GB)"
     required: false
-    default: 'false'
+    default: "false"
+  # Custom removal actions
+  remove-large-packages:
+    description: "Removes unwanted large Apt packages. (frees ~3 GB)"
+    required: false
+    default: "false"
+  remove-cached-tools:
+    description: "Removes cached tools used by setup actions by GitHub. (frees ~8 GB)"
+    required: false
+    default: "false"
+  remove-swapfile:
+    description: "Removes the Swapfile. (frees ~4 GB)"
+    required: false
+    default: "false"
+
 runs:
   using: "composite"
   steps:
-    - name: Disk space report before modification
+    - name: Disk Space Report (BEFORE)
       shell: bash
       run: |
-        echo "Memory and swap:"
-        sudo free
-        echo
-        sudo swapon --show
-        echo
-
         echo "Available storage:"
         sudo df -h
         echo
 
-    - name: Maximize build disk space
+    - name: Maximize Runner Space
       shell: bash
       run: |
-          set -euo pipefail
+        set -euo pipefail
 
-          echo -n "  Removing:     "
-          if [[ ${{ inputs.remove-dotnet }} == 'true' ]]; then
-            echo -n "dotnet "
-          fi
-          if [[ ${{ inputs.remove-android }} == 'true' ]]; then
-            echo -n "android "
-          fi
-          if [[ ${{ inputs.remove-haskell }} == 'true' ]]; then
-            echo -n "haskell "
-          fi
-          if [[ ${{ inputs.remove-codeql }} == 'true' ]]; then
-            echo -n "codeql "
-          fi
-          if [[ ${{ inputs.remove-docker-images }} == 'true' ]]; then
-            echo -n "docker "
-          fi
-          echo
+        echo -n "  Removing:     "
+        if [[ ${{ inputs.remove-dotnet }} == 'true' ]]; then
+          echo -n "dotnet "
+        fi
+        if [[ ${{ inputs.remove-android }} == 'true' ]]; then
+          echo -n "android "
+        fi
+        if [[ ${{ inputs.remove-haskell }} == 'true' ]]; then
+          echo -n "haskell "
+        fi
+        if [[ ${{ inputs.remove-codeql }} == 'true' ]]; then
+          echo -n "codeql "
+        fi
+        if [[ ${{ inputs.remove-docker-images }} == 'true' ]]; then
+          echo -n "docker "
+        fi
+        if [[ ${{ inputs.remove-large-packages }} == 'true' ]]; then
+          echo -n "large_packages "
+        fi
+        if [[ ${{ inputs.remove-cached-tools }} == 'true' ]]; then
+          echo -n "cached_tools "
+        fi
+        if [[ ${{ inputs.remove-swapfile }} == 'true' ]]; then
+          echo -n "swapfile "
+        fi
+        echo
 
-          echo "Removing unwanted software... "
-          if [[ ${{ inputs.remove-dotnet }} == 'true' ]]; then
-            sudo rm -rf /usr/share/dotnet
-          fi
-          if [[ ${{ inputs.remove-android }} == 'true' ]]; then
-            sudo rm -rf /usr/local/lib/android
-          fi
-          if [[ ${{ inputs.remove-haskell }} == 'true' ]]; then
-            sudo rm -rf /opt/ghc
-          fi
-          if [[ ${{ inputs.remove-codeql }} == 'true' ]]; then
-            sudo rm -rf /opt/hostedtoolcache/CodeQL
-          fi
-          if [[ ${{ inputs.remove-docker-images }} == 'true' ]]; then
-            sudo docker image prune --all --force
-          fi
-          echo "... done"
+        echo "Removing unwanted software... "
+        if [[ ${{ inputs.remove-dotnet }} == 'true' ]]; then
+          sudo rm -rf /usr/share/dotnet
+        fi
+        if [[ ${{ inputs.remove-android }} == 'true' ]]; then
+          sudo rm -rf /usr/local/lib/android
+        fi
+        if [[ ${{ inputs.remove-haskell }} == 'true' ]]; then
+          sudo rm -rf /opt/ghc
+          sudo rm -rf /usr/local/.ghcup
+        fi
+        if [[ ${{ inputs.remove-codeql }} == 'true' ]]; then
+          sudo rm -rf /opt/hostedtoolcache/CodeQL
+        fi
+        if [[ ${{ inputs.remove-docker-images }} == 'true' ]]; then
+          sudo docker image prune --all --force > /dev/null
+        fi
+        if [[ ${{ inputs.remove-large-packages }} == 'true' ]]; then
+          sudo apt-get remove -y '^aspnetcore-.*' > /dev/null
+          sudo apt-get remove -y '^dotnet-.*' > /dev/null
+          sudo apt-get remove -y '^llvm-.*' > /dev/null
+          sudo apt-get remove -y 'php.*' > /dev/null
+          sudo apt-get remove -y '^mongodb-.*' > /dev/null
+          sudo apt-get remove -y '^mysql-.*' > /dev/null
+          sudo apt-get remove -y azure-cli google-chrome-stable firefox powershell mono-devel libgl1-mesa-dri --fix-missing > /dev/null
+          sudo apt-get remove -y google-cloud-sdk --fix-missing > /dev/null
+          sudo apt-get remove -y google-cloud-cli --fix-missing > /dev/null
+          sudo apt-get autoremove -y > /dev/null
+          sudo apt-get clean > /dev/null
+        fi
+        if [[ ${{ inputs.remove-cached-tools }} == 'true' ]]; then
+          sudo rm -rf "$AGENT_TOOLSDIRECTORY"
+        fi
+        if [[ ${{ inputs.remove-swapfile }} == 'true' ]]; then
+          sudo swapoff -a
+          sudo rm -f /mnt/swapfile
+          free -h
+        fi
+        echo "... done"
 
-    - name: Disk space report after modification
+    - name: Disk Space Report (AFTER)
       shell: bash
       run: |
         echo "Available storage:"
-        sudo df -h || true
+        sudo df -h
+        echo

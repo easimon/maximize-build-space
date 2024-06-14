@@ -3,7 +3,7 @@
 Forked from [easimon's maximize-build-space action](https://github.com/easimon/maximize-build-space).
 Inspiration and additional software removals from [AdityaGarg8's remove-unwanted-software action](https://github.com/AdityaGarg8/remove-unwanted-software).
 
-By default, public shared Github runners come with around 25-29 GB of free disk space to be consumed by your build or test job(s).
+By default, public shared Github runners come with around 25-29 GB of free disk space to be consumed by your build and/or test job(s).
 If this is too little for you, and your job runs out of disk space, this action might be for you.
 
 If not: please go on, there's nothing to see here.
@@ -27,7 +27,7 @@ This action does the following:
 
 1. (Optionally) Removes unwanted preinstalled software
 
-This results in the space of the previously installed packages and the temp disk being available for your build job.
+This results in the space of the previously installed packages and the temp disk being available for your test and/or build job.
 
 ## Usage
 
@@ -58,24 +58,38 @@ jobs:
 All inputs are optional and default to the following.
 
 ```yaml
+  # Standard package removal actions
   remove-dotnet:
-    description: 'Removes .NET runtime and libraries.'
+    description: "Removes .NET runtime and libraries. (frees ~2 GB)"
     required: false
-    default: 'false'
+    default: "false"
   remove-android:
-    description: 'Removes Android SDKs and Tools.'
+    description: "Removes Android SDKs and Tools. (frees ~9 GB)"
     required: false
-    default: 'false'
+    default: "false"
   remove-haskell:
-    description: 'Removes GHC (Haskell) artifacts.'
+    description: "Removes GHC (Haskell) artifacts. (frees ~5 GB)"
     required: false
-    default: 'false'
+    default: "false"
   remove-codeql:
-    description: 'Removes CodeQL Action Bundles.'
+    description: "Removes CodeQL Action Bundles. (frees ~5 GB)"
     required: false
-    default: 'false'
+    default: "false"
   remove-docker-images:
-    description: 'Removes cached Docker images.'
+    description: "Removes cached Docker images. (frees ~3 GB)"
     required: false
-    default: 'false'
+    default: "false"
+  # Custom removal actions
+  remove-large-packages:
+    description: "Removes unwanted large Apt packages. (frees ~3 GB)"
+    required: false
+    default: "false"
+  remove-cached-tools:
+    description: "Removes cached tools used by setup actions by GitHub. (frees ~8 GB)"
+    required: false
+    default: "false"
+  remove-swapfile:
+    description: "Removes the Swapfile. (frees ~4 GB)"
+    required: false
+    default: "false"
 ```
