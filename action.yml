@@ -65,7 +65,7 @@ runs:
       shell: bash
       run: |
         echo "Memory and swap:"
-        sudo free
+        sudo free -h
         echo
         sudo swapon --show
         echo
@@ -195,7 +195,7 @@ runs:
       shell: bash
       run: |
         echo "Memory and swap:"
-        sudo free
+        sudo free -h
         echo
         sudo swapon --show
         echo
