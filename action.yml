@@ -178,11 +178,11 @@ runs:
           # create and mount build volume
           sudo lvcreate -l 100%FREE -n buildlv "${VG_NAME}"
           if [[ ${{ inputs.overprovision-lvm }} == 'true' ]]; then
-            sudo mkfs.ext4 -m0 "/dev/mapper/${VG_NAME}-buildlv"
+            sudo mkfs.btrfs "/dev/mapper/${VG_NAME}-buildlv"
           else
-            sudo mkfs.ext4 -Enodiscard -m0 "/dev/mapper/${VG_NAME}-buildlv"
+            sudo mkfs.btrfs "/dev/mapper/${VG_NAME}-buildlv"
           fi
-          sudo mount "/dev/mapper/${VG_NAME}-buildlv" "${BUILD_MOUNT_PATH}"
+          sudo mount -o compress=zstd:13 "/dev/mapper/${VG_NAME}-buildlv" "${BUILD_MOUNT_PATH}"
           sudo chown -R "${{ inputs.build-mount-path-ownership }}" "${BUILD_MOUNT_PATH}"
 
           # if build mount path is a parent of $GITHUB_WORKSPACE, and has been deleted, recreate it
